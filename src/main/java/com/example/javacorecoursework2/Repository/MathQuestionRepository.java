@@ -11,8 +11,7 @@ import java.util.Set;
 @Repository
 public class MathQuestionRepository implements QuestionRepository {
 
-
-    private Set<Question> questionsMath = new HashSet<>();
+    private final Set<Question> questionsMath = new HashSet<>();
 
     @Override
     public Question add(Question question) {

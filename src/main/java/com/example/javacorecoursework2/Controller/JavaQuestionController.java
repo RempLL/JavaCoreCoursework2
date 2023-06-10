@@ -8,11 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collection;
 import java.util.Set;
 
 
 @RestController
-@RequestMapping("/exam/java")
+@RequestMapping("/java")
 public class JavaQuestionController {
     @Qualifier("javaQuestionService")
     private final QuestionService service;
@@ -23,18 +24,13 @@ public class JavaQuestionController {
     }
 
     @GetMapping
-    public Set<Question> questionSet() {
+    public Collection<Question> questionSet()   {
         return service.getAll();
     }
 
     @GetMapping("/add")
     public Question add(@RequestParam("question") String question, @RequestParam("answer") String answer) {
         return service.add(question, answer);
-    }
-
-    @GetMapping("/adds")
-    public Question add(@RequestParam("question") Question question){
-        return service.add(question);
     }
 
     @GetMapping("/remove")

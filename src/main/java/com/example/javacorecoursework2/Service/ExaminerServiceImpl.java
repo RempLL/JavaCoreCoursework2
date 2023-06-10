@@ -5,8 +5,7 @@ import com.example.javacorecoursework2.Model.Question;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ExaminerServiceImpl implements ExaminerService {
@@ -14,29 +13,29 @@ public class ExaminerServiceImpl implements ExaminerService {
     private final QuestionService javaQuestionService;
     private final QuestionService mathQuestionService;
 
-    public ExaminerServiceImpl(@Qualifier("javaQuestionService") QuestionService javaQuestionService,
-                               @Qualifier("mathQuestionService") QuestionService mathQuestionService) {
+    private final Random random;
+
+    public ExaminerServiceImpl(JavaQuestionService javaQuestionService,
+                               MathQuestionService mathQuestionService) {
         this.javaQuestionService = javaQuestionService;
         this.mathQuestionService = mathQuestionService;
+        this.random = new Random();
     }
 
     @Override
-    public List<Question> getQuestions(int amount) {
+    public Collection<Question> getQuestions(int amount) {
+        List<QuestionService> questionList = List.of(javaQuestionService, mathQuestionService);
         if (amount > (javaQuestionService.getAll().size() + mathQuestionService.getAll().size()) || amount < 1) {
             throw new BadRequestException();
         } else {
-            List<Question> questionList = new ArrayList<>();
-            for (int i = 0; i < amount/2; i++) {
-                Question javaQuestion = javaQuestionService.getRandomQuestion();
-                Question mathQuestion = mathQuestionService.getRandomQuestion();
-                if (questionList.contains(javaQuestion) || questionList.contains(mathQuestion)) {
-                    i--;
-                    continue;
-                }
-                questionList.add(javaQuestion);
-                questionList.add(mathQuestion);
+
+            Set<Question> setRandom = new HashSet<>(amount);
+            while (setRandom.size() < amount) {
+                int index = random.nextInt(questionList.size());
+                setRandom.add(questionList.get(index).getRandomQuestion());
             }
-            return questionList;
+            return setRandom;
         }
     }
 }
+
